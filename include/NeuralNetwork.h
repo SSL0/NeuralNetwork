@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <vector>
+#include <functional>
 
 #include <Layer.h>
 
@@ -19,14 +20,14 @@ public:
     /**
      * @param numOfNeuronOnEachLayer It's vector that contain number of neuron on each layer
      */
-    NeuralNetwork(vector<int> neuronsForEach);
+    NeuralNetwork(const vector<int>& neuronsForEach);
 
     /**
      * @brief Show result of NN
      * @param input Input data
      * @return Neurons on last layer
      */
-    double Predict(vector<double> input);
+    double Predict(const vector<double>& input);
 
     /**
      * @brief Train with "Back Propagation Error" method
@@ -34,8 +35,10 @@ public:
      * @param numOfEpoch Number of epoch
      * @param learningRate Num between 0...1 that show how fast will learning be
      */
-    void TrainBPE(vector<TrainingType> trainingData, int numOfEpoch, double learningRate);
+    void TrainBPE(const vector<TrainingType>& trainingData, int numOfEpoch, double learningRate);
 
 private:
     vector<Layer> layers;
+
+    void GoThoughtLayers(size_t start, size_t end, function<void(size_t, size_t)> action);
 };

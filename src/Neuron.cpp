@@ -4,9 +4,7 @@
 
 #include "Neuron.h"
 
-Neuron::Neuron(){
-
-}
+Neuron::Neuron() = default;
 
 
 void Neuron::CreateRandWeights(int num) {

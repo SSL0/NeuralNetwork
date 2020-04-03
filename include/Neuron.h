@@ -14,14 +14,17 @@ class Neuron {
 public:
     Neuron();
 
-    double Result = 0;
-
     void CreateRandWeights(int num);
 
     void CreateWeights(vector<double> weightsArr);
 
+    static double SigmoidFunc(double x);
+
     vector<double> weights;
 
-    static double SigmoidFunc(double x);
+    double result = 0;
+
+    double error;
+
 private:
 };
