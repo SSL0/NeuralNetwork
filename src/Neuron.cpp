@@ -18,5 +18,5 @@ double Neuron::sigmoidFunc(double x) {
 }
 
 void Neuron::createWeights(vector<double> weightsArr) {
-    weights = weightsArr;
+    weights = move(weightsArr);
 }

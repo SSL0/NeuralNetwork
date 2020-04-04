@@ -40,5 +40,6 @@ public:
 private:
     vector<Layer> layers;
 
-    void GoThoughtLayers(size_t start, size_t end, function<void(size_t, size_t)> action);
+    static double ComputeMSE(const vector<double>& errors);
+    void GoThoughtLayers(size_t start, size_t end, const function<void(size_t, size_t)>& action);
 };

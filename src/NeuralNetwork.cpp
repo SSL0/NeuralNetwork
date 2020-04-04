@@ -17,8 +17,6 @@ NeuralNetwork::NeuralNetwork(const vector<int>& neuronsForEach) {
         for(Neuron &neuron : layers[i - 1].neurons) {
             neuron.createRandWeights(neuronsForEach[i]);
         }
-
-
     }
 }
 
@@ -41,6 +39,7 @@ vector<Neuron>& NeuralNetwork::Predict(const vector<double>& input) {
 }
 
 void NeuralNetwork::TrainBPE(const vector<TrainType>& trainData, int numOfEpoch, double learningRate) {
+    // Array for MSE
     vector<double> errors;
     for(int i = 0; i <= numOfEpoch; i++) {
         for(const TrainType& set : trainData){
@@ -51,7 +50,10 @@ void NeuralNetwork::TrainBPE(const vector<TrainType>& trainData, int numOfEpoch,
                 for(Neuron &prevLayerNeuron : layers[currentLayer - 1].neurons){
                     double error  = layers[currentLayer].neurons[currentNeuron].error;
                     double actual = layers[currentLayer].neurons[currentNeuron].result;
+
+                    // Add square error
                     errors.emplace_back(error * error);
+
                     double deltaWeight = (actual * (1 - actual)) * error;
                     prevLayerNeuron.weights[currentNeuron] -= prevLayerNeuron.result * deltaWeight * learningRate;
 
@@ -60,27 +62,27 @@ void NeuralNetwork::TrainBPE(const vector<TrainType>& trainData, int numOfEpoch,
             });
 
         }
-        double obj = 0.0;
-        for(double &err : errors){
-            obj += err;
-        }
-        //cout << "MSE: " << obj / errors.size() << endl;
+
+        printf("\rTrain progress: [%d%%] | MSE: %f", i * 100 / numOfEpoch, ComputeMSE(errors));
     }
 }
 
-void NeuralNetwork::GoThoughtLayers(size_t start, size_t end, function<void(size_t, size_t)> action) {
-    if(start < end){
-        for(size_t layer = start; layer < end; layer++){
-            for(size_t neuron = 0; neuron < layers[layer].neurons.size(); neuron++){
-                action(layer, neuron);
-            }
+void NeuralNetwork::GoThoughtLayers(size_t start, size_t end, const function<void(size_t, size_t)>& action) {
+    int direction = 0;
+    if(start < end) direction = 1;
+    else direction = -1;
+
+    for(size_t layer = start; (start < end) ? layer < end : layer > end; layer += direction){
+        for(size_t neuron = 0; neuron < layers[layer].neurons.size(); neuron++){
+            action(layer, neuron);
         }
     }
-    else{
-        for(size_t layer = start; layer > end; layer--){
-            for(size_t neuron = 0; neuron < layers[layer].neurons.size(); neuron++){
-                action(layer, neuron);
-            }
-        }
+}
+
+double NeuralNetwork::ComputeMSE(const vector<double>& errors) {
+    double errorAverage = 0.0;
+    for(double err : errors){
+        errorAverage += err;
     }
+    return errorAverage / errors.size();
 }

@@ -22,9 +22,9 @@ public:
 
     vector<double> weights;
 
-    double result = 0;
+    double result = 0.0;
 
-    double error;
+    double error = 0.0;
 
 private:
 };
