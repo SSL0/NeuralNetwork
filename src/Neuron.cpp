@@ -7,16 +7,16 @@
 Neuron::Neuron() = default;
 
 
-void Neuron::CreateRandWeights(int num) {
+void Neuron::createRandWeights(int num) {
     for(int i = 0; i < num; i++){
         weights.push_back((double)rand() / RAND_MAX);
     }
 }
 
-double Neuron::SigmoidFunc(double x) {
+double Neuron::sigmoidFunc(double x) {
     return 1 / (1 + exp(-x));
 }
 
-void Neuron::CreateWeights(vector<double> weightsArr) {
+void Neuron::createWeights(vector<double> weightsArr) {
     weights = weightsArr;
 }

@@ -16,4 +16,5 @@ public:
     Layer(int numOfNeuron);
 
     vector<Neuron> neurons;
+    Neuron biasNeuron;
 };

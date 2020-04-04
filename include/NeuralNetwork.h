@@ -13,7 +13,7 @@
 using namespace std;
 
 // InputData, Expected
-typedef pair<vector<double>, double> TrainingType;
+typedef pair<vector<double>, double> TrainType;
 
 class NeuralNetwork {
 public:
@@ -27,7 +27,7 @@ public:
      * @param input Input data
      * @return Neurons on last layer
      */
-    double Predict(const vector<double>& input);
+    vector<Neuron>& Predict(const vector<double>& input);
 
     /**
      * @brief Train with "Back Propagation Error" method
@@ -35,7 +35,7 @@ public:
      * @param numOfEpoch Number of epoch
      * @param learningRate Num between 0...1 that show how fast will learning be
      */
-    void TrainBPE(const vector<TrainingType>& trainingData, int numOfEpoch, double learningRate);
+    void TrainBPE(const vector<TrainType>& trainingData, int numOfEpoch, double learningRate);
 
 private:
     vector<Layer> layers;

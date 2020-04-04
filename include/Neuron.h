@@ -14,11 +14,11 @@ class Neuron {
 public:
     Neuron();
 
-    void CreateRandWeights(int num);
+    void createRandWeights(int num);
 
-    void CreateWeights(vector<double> weightsArr);
+    void createWeights(vector<double> weightsArr);
 
-    static double SigmoidFunc(double x);
+    static double sigmoidFunc(double x);
 
     vector<double> weights;
 
