@@ -7,8 +7,9 @@
 #include <iostream>
 #include <vector>
 #include <functional>
-#include <fstream>
-#include <sstream>
+
+// For print double value in cout
+#include <iomanip>
 
 #include <Layer.h>
 #include <File.h>

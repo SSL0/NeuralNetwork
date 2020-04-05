@@ -86,11 +86,11 @@ void NeuralNetwork::trainBP(int numOfEpoch, double learningRate) {
         // Expected: [ %f...%f ] Output: [ %f...%f ]
         cout << "Output: [ ";
         for(double& value : results){
-            cout << value << ' ';
+            cout << fixed << value << ' ';
         }
         cout << "] Expected: [ ";
-        for(double& val : set.second){
-            cout << val << ' ';
+        for(double& value : set.second){
+            cout << fixed << value << ' ';
         }
         cout << ']' << endl;
     }
