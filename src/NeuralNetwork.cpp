@@ -32,19 +32,23 @@ vector<Neuron>& NeuralNetwork::Predict(const vector<double>& input) {
         for(Neuron &prevLayerNeuron : layers[currentLayer - 1].neurons){
             result += prevLayerNeuron.weights[currentNeuron] * prevLayerNeuron.result;
         }
-        result += layers[currentLayer - 1].biasNeuron.weights[currentLayer];
+        //result += layers[currentLayer - 1].biasNeuron.weights[currentLayer];
         layers[currentLayer].neurons[currentNeuron].result = Neuron::sigmoidFunc(result);
     });
     return layers.back().neurons;
 }
 
-void NeuralNetwork::TrainBPE(const vector<TrainType>& trainData, int numOfEpoch, double learningRate) {
+void NeuralNetwork::TrainBP(int numOfEpoch, double learningRate) {
     // Array for MSE
     vector<double> errors;
-    for(int i = 0; i <= numOfEpoch; i++) {
-        for(const TrainType& set : trainData){
+    for(int epoch = 0; epoch <= numOfEpoch; epoch++) {
+        for(const TrainType& set : trainingData){
             // Make error for last neuron
-            layers.back().neurons.back().error = Predict(set.first).back().result - set.second;
+            vector<Neuron>& neurons = Predict(set.first);
+            for(size_t i = 0; i < neurons.size(); i++){
+                layers.back().neurons[i].error = layers.back().neurons[i].result - set.second[i];
+            }
+
             // Back Propagation Error
             GoThoughtLayers(layers.size() - 1, 0, [this, &set, &learningRate, &errors](size_t currentLayer, size_t currentNeuron){
                 for(Neuron &prevLayerNeuron : layers[currentLayer - 1].neurons){
@@ -62,8 +66,22 @@ void NeuralNetwork::TrainBPE(const vector<TrainType>& trainData, int numOfEpoch,
             });
 
         }
+        printf("\rTrain progress: [%d%%] | MSE: %f", epoch * 100 / numOfEpoch, ComputeMSE(errors));
+    }
 
-        printf("\rTrain progress: [%d%%] | MSE: %f", i * 100 / numOfEpoch, ComputeMSE(errors));
+    cout << endl;
+    for(auto & set : trainingData){
+        vector<Neuron> predict = Predict(set.first);
+        string first, second;
+        if(predict[0].result > .8) first = "setosa";
+        else if(predict[1].result > .8) first = "versicolor";
+        else if(predict[2].result > .8) first = "virginica";
+
+        if(set.second[0] > .8) second = "setosa";
+        else if(set.second[1] > .8) second = "versicolor";
+        else if(set.second[2] > .8) second = "virginica";
+
+        printf("Expected: [%s] \n Output: [%s] ", first.c_str(), second.c_str());
     }
 }
 
@@ -85,4 +103,24 @@ double NeuralNetwork::ComputeMSE(const vector<double>& errors) {
         errorAverage += err;
     }
     return errorAverage / errors.size();
+}
+
+void NeuralNetwork::GetTrainFile(const string& path) {
+    ifstream trainFile(path);
+    string input, expected;
+    while(!trainFile.eof()){
+        getline(trainFile, input, '|');
+        getline(trainFile, expected);
+
+        trainingData.emplace_back(GetValuesFromStr(input, ','), GetValuesFromStr(expected, ','));
+    }
+}
+
+vector<double> NeuralNetwork::GetValuesFromStr(const string& str, const char &delim) {
+    vector<double> output;
+    stringstream ss(str);
+    for(string value; getline(ss, value, delim);){
+        output.emplace_back(stod(value));
+    }
+    return output;
 }
