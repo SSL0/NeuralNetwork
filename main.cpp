@@ -7,9 +7,9 @@ using namespace std;
 int main() {
     NeuralNetwork nw({4, 25, 3});
 
-    nw.GetTrainFile("../Assets/dataset.csv");
+    nw.setTrainFile("../Assets/dataset.csv");
 
-    nw.TrainBP(2000, 0.2);
+    nw.trainBP(5000, 0.15);
 
     return 0;
 }
