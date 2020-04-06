@@ -32,7 +32,7 @@ vector<double>& NeuralNetwork::predict(const vector<double>& input) {
         for (Neuron &prevLayerNeuron : layers[currentLayer - 1].neurons) {
             result += prevLayerNeuron.weights[currentNeuron] * prevLayerNeuron.result;
         }
-        //result += layers[currentLayer - 1].biasNeuron.weights[currentLayer];
+        result += layers[currentLayer - 1].biasNeuron.weights[currentLayer];
         layers[currentLayer].neurons[currentNeuron].result = Neuron::sigmoidFunc(result);
     });
 
@@ -48,33 +48,36 @@ vector<double>& NeuralNetwork::predict(const vector<double>& input) {
 void NeuralNetwork::trainBP(int numOfEpoch, double learningRate) {
     // Array for MSE
     vector<double> errors;
-
+    File out("errors.txt");
     for(int epoch = 0; epoch <= numOfEpoch; epoch++) {
         for(const TrainType& set : trainingData){
             predict(set.first);
 
             // Make error for neurons on LAST LAYER
             for(size_t i = 0; i < layers.back().neurons.size(); i++){
-                layers.back().neurons[i].error = layers.back().neurons[i].result - set.second[i];
+                layers.back().neurons[i].error =  set.second[i] - layers.back().neurons[i].result;
             }
 
             // Back Propagation Error
             goThoughtLayers(layers.size() - 1, 0,[this, &set, &learningRate, &errors](size_t currentLayer, size_t currentNeuron) {
+                double error = layers[currentLayer].neurons[currentNeuron].error;
+                double actual = layers[currentLayer].neurons[currentNeuron].result;
+
+                // Add square error
+                errors.emplace_back(error * error);
+
                 for (Neuron &prevLayerNeuron : layers[currentLayer - 1].neurons) {
-                    double error = layers[currentLayer].neurons[currentNeuron].error;
-                    double actual = layers[currentLayer].neurons[currentNeuron].result;
-
-                    // Add square error
-                    errors.emplace_back(error * error);
-
                     double deltaWeight = (actual * (1 - actual)) * error;
-                    prevLayerNeuron.weights[currentNeuron] -= prevLayerNeuron.result * deltaWeight * learningRate;
 
+                    prevLayerNeuron.weights[currentNeuron] += prevLayerNeuron.result * deltaWeight * learningRate;
                     prevLayerNeuron.error = prevLayerNeuron.weights[currentNeuron] * deltaWeight;
+
+                    layers[currentLayer - 1].biasNeuron.weights[currentNeuron] += deltaWeight * learningRate;
                 }
             });
 
         }
+        out.write(to_string(computeMSE(errors) * 100));
         printf("\rTrain progress: [%d%%] | Errors: %f%% MSE: %f", epoch * 100 / numOfEpoch, computeMSE(errors) * 100, computeMSE(errors));
     }
 

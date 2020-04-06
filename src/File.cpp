@@ -7,21 +7,25 @@
 // Public
 
 File::File(const string& path) {
-    fileStream.open(path);
+    this->path = path;
 }
 
 void File::getTrainData(vector<TrainType>& trainData) {
+    inputStream.open(path);
     string input, expected;
-    while(!fileStream.eof()){
-        getline(fileStream, input, '|');
-        getline(fileStream, expected);
+    while(!inputStream.eof()){
+        getline(inputStream, input, '|');
+        getline(inputStream, expected);
 
         trainData.emplace_back(getValuesFromStr(input, ','), getValuesFromStr(expected, ','));
     }
+    inputStream.close();
+
 }
 
 void File::write(const string &str) {
-    fileStream << str << endl;
+    if(!outputStream.is_open()) outputStream.open(path, ios::app);
+    outputStream << str << endl;
 }
 
 // Private

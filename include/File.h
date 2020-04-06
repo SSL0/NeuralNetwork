@@ -22,6 +22,8 @@ public:
     void getTrainData(vector<TrainType>& trainData);
 
 private:
-    fstream fileStream;
+    string path;
+    ifstream inputStream;
+    ofstream outputStream;
     static vector<double> getValuesFromStr(const string& str, const char &delim);
 };
