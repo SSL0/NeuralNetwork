@@ -86,7 +86,7 @@ void NeuralNetwork::trainBP(int numOfEpoch, double learningRate, int batch, bool
         }
         double MSE = computeMSE(errors) ;
         out.write(to_string(MSE));
-        printf("\rTrain progress: [%d%%] | Errors: %f%% MSE: %f", epoch * 100 / numOfEpoch, MSE);
+        printf("\rTrain progress: [%d%%] | MSE: %f", epoch * 100 / numOfEpoch, MSE);
     }
 
     cout << endl << "Results after train: " << endl;
@@ -128,7 +128,7 @@ double NeuralNetwork::computeMSE(vector<double>& errors) {
         errorsAverage += err;
     }
     errors.clear();
-    return errorsAverage / errorsCount * 100;
+    return errorsAverage / errorsCount;
 }
 
 void NeuralNetwork::setTrainFile(const string &path) {
