@@ -7,6 +7,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <random>
 
 using namespace std;
 
@@ -27,4 +28,9 @@ public:
     double error = 0.0;
 
 private:
+
+    double getRandVal();
+    default_random_engine eng;
+    uniform_real_distribution<double> randGenerator;
+
 };

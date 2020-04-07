@@ -38,16 +38,26 @@ public:
      * @param numOfEpoch Number of epoch
      * @param learningRate Num between 0...1 that show how fast will learning be
      */
-    void trainBP(int numOfEpoch, double learningRate);
+    void trainBP(int numOfEpoch, double learningRate, int batch, bool withBias = false);
 
 
     void setTrainFile(const string& path);
 
 private:
+
+    double computeMSE(vector<double>& errors);
+    void goThoughtLayers(size_t start, size_t end, const function<void(size_t, size_t)>& action);
+
+    double getRandVal();
+    default_random_engine eng;
+    uniform_real_distribution<double> randGenerator;
+
+    bool _withBias;
+
     vector<Layer> layers;
     vector<double> results;
 
     vector<TrainType> trainingData;
-    static double computeMSE(const vector<double>& errors);
-    void goThoughtLayers(size_t start, size_t end, const function<void(size_t, size_t)>& action);
+    size_t errorsCount = 0;
+    double errorsAverage = 0.0;
 };

@@ -32,7 +32,9 @@ vector<double>& NeuralNetwork::predict(const vector<double>& input) {
         for (Neuron &prevLayerNeuron : layers[currentLayer - 1].neurons) {
             result += prevLayerNeuron.weights[currentNeuron] * prevLayerNeuron.result;
         }
-        result += layers[currentLayer - 1].biasNeuron.weights[currentLayer];
+        if(_withBias){
+            result += layers[currentLayer - 1].biasNeuron.weights[currentLayer];
+        }
         layers[currentLayer].neurons[currentNeuron].result = Neuron::sigmoidFunc(result);
     });
 
@@ -45,21 +47,24 @@ vector<double>& NeuralNetwork::predict(const vector<double>& input) {
     return results;
 }
 
-void NeuralNetwork::trainBP(int numOfEpoch, double learningRate) {
+void NeuralNetwork::trainBP(int numOfEpoch, double learningRate, int batch, bool withBias) {
+    _withBias = withBias;
     // Array for MSE
-    vector<double> errors;
     File out("errors.txt");
+    vector<double> errors;
     for(int epoch = 0; epoch <= numOfEpoch; epoch++) {
-        for(const TrainType& set : trainingData){
-            predict(set.first);
+        for(int setCounter = 0, setIndex; setCounter < batch; setCounter++){
+            setIndex = (int)(getRandVal() * trainingData.size());
+
+            predict(trainingData[setIndex].first);
 
             // Make error for neurons on LAST LAYER
             for(size_t i = 0; i < layers.back().neurons.size(); i++){
-                layers.back().neurons[i].error =  set.second[i] - layers.back().neurons[i].result;
+                layers.back().neurons[i].error =  trainingData[setIndex].second[i] - layers.back().neurons[i].result;
             }
 
             // Back Propagation Error
-            goThoughtLayers(layers.size() - 1, 0,[this, &set, &learningRate, &errors](size_t currentLayer, size_t currentNeuron) {
+            goThoughtLayers(layers.size() - 1, 0,[this, &learningRate, &errors](size_t currentLayer, size_t currentNeuron) {
                 double error = layers[currentLayer].neurons[currentNeuron].error;
                 double actual = layers[currentLayer].neurons[currentNeuron].result;
 
@@ -72,13 +77,16 @@ void NeuralNetwork::trainBP(int numOfEpoch, double learningRate) {
                     prevLayerNeuron.weights[currentNeuron] += prevLayerNeuron.result * deltaWeight * learningRate;
                     prevLayerNeuron.error = prevLayerNeuron.weights[currentNeuron] * deltaWeight;
 
-                    layers[currentLayer - 1].biasNeuron.weights[currentNeuron] += deltaWeight * learningRate;
+                    if(_withBias){
+                        layers[currentLayer - 1].biasNeuron.weights[currentNeuron] += deltaWeight * learningRate;
+                    }
                 }
             });
 
         }
-        out.write(to_string(computeMSE(errors) * 100));
-        printf("\rTrain progress: [%d%%] | Errors: %f%% MSE: %f", epoch * 100 / numOfEpoch, computeMSE(errors) * 100, computeMSE(errors));
+        double MSE = computeMSE(errors) ;
+        out.write(to_string(MSE));
+        printf("\rTrain progress: [%d%%] | Errors: %f%% MSE: %f", epoch * 100 / numOfEpoch, MSE);
     }
 
     cout << endl << "Results after train: " << endl;
@@ -113,15 +121,21 @@ void NeuralNetwork::goThoughtLayers(size_t start, size_t end, const function<voi
     }
 }
 
-double NeuralNetwork::computeMSE(const vector<double>& errors) {
-    double errorAverage = 0.0;
+double NeuralNetwork::computeMSE(vector<double>& errors) {
+    errorsCount += errors.size();
+
     for(double err : errors){
-        errorAverage += err;
+        errorsAverage += err;
     }
-    return errorAverage / errors.size();
+    errors.clear();
+    return errorsAverage / errorsCount * 100;
 }
 
 void NeuralNetwork::setTrainFile(const string &path) {
     File file(path);
     file.getTrainData(trainingData);
+}
+
+double NeuralNetwork::getRandVal() {
+    return randGenerator(eng);
 }

@@ -9,7 +9,7 @@ Neuron::Neuron() = default;
 
 void Neuron::createRandWeights(int num) {
     for(int i = 0; i < num; i++){
-        weights.push_back((double)rand() / RAND_MAX);
+        weights.push_back(getRandVal());
     }
 }
 
@@ -19,4 +19,8 @@ double Neuron::sigmoidFunc(double x) {
 
 void Neuron::createWeights(vector<double> weightsArr) {
     weights = move(weightsArr);
+}
+
+double Neuron::getRandVal() {
+    return randGenerator(eng);
 }
