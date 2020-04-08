@@ -9,7 +9,7 @@ int main() {
 
     nw.setTrainFile("../Assets/dataset_iris.csv");
 
-    nw.trainBP(5000, 0.2, 75, true);
+    nw.trainBP(5000, 0.2, 100, true);
 
     return 0;
 }

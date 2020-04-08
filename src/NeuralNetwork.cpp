@@ -72,13 +72,13 @@ void NeuralNetwork::trainBP(int numOfEpoch, double learningRate, int batch, bool
                 errors.emplace_back(error * error);
 
                 for (Neuron &prevLayerNeuron : layers[currentLayer - 1].neurons) {
-                    double deltaWeight = (actual * (1 - actual)) * error;
-
-                    prevLayerNeuron.weights[currentNeuron] += prevLayerNeuron.result * deltaWeight * learningRate;
-                    prevLayerNeuron.error = prevLayerNeuron.weights[currentNeuron] * deltaWeight;
+                    double deltaOut = (actual * (1 - actual)) * error;
+                    double gradient = deltaOut * prevLayerNeuron.result;
+                    prevLayerNeuron.weights[currentNeuron] += gradient * learningRate;
+                    prevLayerNeuron.error = prevLayerNeuron.weights[currentNeuron] * deltaOut;
 
                     if(_withBias){
-                        layers[currentLayer - 1].biasNeuron.weights[currentNeuron] += deltaWeight * learningRate;
+                        layers[currentLayer - 1].biasNeuron.weights[currentNeuron] += deltaOut * learningRate;
                     }
                 }
             });
