@@ -74,8 +74,8 @@ void NeuralNetwork::trainBP(int numOfEpoch, double learningRate, int batch, bool
                 for (Neuron &prevLayerNeuron : layers[currentLayer - 1].neurons) {
                     double deltaOut = (actual * (1 - actual)) * error;
                     double gradient = deltaOut * prevLayerNeuron.result;
-                    prevLayerNeuron.weights[currentNeuron] += gradient * learningRate;
                     prevLayerNeuron.error = prevLayerNeuron.weights[currentNeuron] * deltaOut;
+                    prevLayerNeuron.weights[currentNeuron] += gradient * learningRate;
 
                     if(_withBias){
                         layers[currentLayer - 1].biasNeuron.weights[currentNeuron] += deltaOut * learningRate;
