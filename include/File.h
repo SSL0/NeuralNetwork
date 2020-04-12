@@ -19,10 +19,11 @@ public:
 
     void write(const string& str);
 
-    void getTrainData(vector<TrainType>& trainData);
+    void getTrainData(vector<TrainType>& trainData, int numOfOutputs);
 
 private:
     string path;
+
     ifstream inputStream;
     ofstream outputStream;
     static vector<double> getValuesFromStr(const string& str, const char &delim);
