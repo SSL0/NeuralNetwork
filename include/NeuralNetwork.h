@@ -48,9 +48,7 @@ private:
     double computeMSE(vector<double>& errors);
     void goThoughtLayers(size_t start, size_t end, const function<void(size_t, size_t)>& action);
 
-    double getRandVal();
-    default_random_engine eng;
-    uniform_real_distribution<double> randGenerator;
+    static double getRandVal(double min = 0.0, double max = 1.0);
 
     bool _withBias;
 

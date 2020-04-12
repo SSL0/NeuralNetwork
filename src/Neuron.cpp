@@ -21,6 +21,11 @@ void Neuron::createWeights(vector<double> weightsArr) {
     weights = move(weightsArr);
 }
 
-double Neuron::getRandVal() {
-    return randGenerator(eng);
+double Neuron::getRandVal(double min, double max) {
+    random_device rd;
+    mt19937 mt(rd());
+    uniform_real_distribution<double> randGenerator(min, max);
+
+    return randGenerator(mt);
 }
+
