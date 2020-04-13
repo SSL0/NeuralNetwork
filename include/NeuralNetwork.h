@@ -16,12 +16,12 @@
 using namespace std;
 
 // Input data, Expected
-typedef pair<vector<double>, vector<double>> TrainType;
+typedef pair<vector<double>, vector<double>> InputType;
 
 class NeuralNetwork {
 public:
     /**
-     * @param numOfNeuronOnEachLayer It's vector that contain number of neuron on each layer
+     * @param numOfNeuronOnEachLayer Vector that contain number of neuron on each layer
      */
     NeuralNetwork(const vector<int>& neuronsForEach);
 
@@ -40,12 +40,27 @@ public:
      */
     void trainBP(int numOfEpoch, double learningRate, int batch, bool withBias = false);
 
-
+    vector<double> setPredictFile(const string& path);
+    /**
+     * @brief Get train data from file
+     * @param path Set path for train file
+     */
     void setTrainFile(const string& path);
 
 private:
-
+    /**
+     * @brief Get output in value from array
+     * @param array
+     */
+    static double getAnswer(vector<double>& array);
     double computeMSE(vector<double>& errors);
+
+    /**
+     * @brief Go for layers and all include neurons
+     * @param start Layer From
+     * @param end Layer To
+     * @param action Action for every neuron
+     */
     void goThoughtLayers(size_t start, size_t end, const function<void(size_t, size_t)>& action);
 
     static double getRandVal(double min = 0.0, double max = 1.0);
@@ -55,7 +70,7 @@ private:
     vector<Layer> layers;
     vector<double> results;
 
-    vector<TrainType> trainingData;
+    vector<InputType> trainingData;
     size_t errorsCount = 0;
     double errorsAverage = 0.0;
 };

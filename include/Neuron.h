@@ -24,13 +24,9 @@ public:
     vector<double> weights;
 
     double result = 0.0;
-
     double error = 0.0;
 
 private:
 
-    double getRandVal();
-    default_random_engine eng;
-    uniform_real_distribution<double> randGenerator;
-
+    static double getRandVal(double min = 0.0, double max = 1.0);
 };

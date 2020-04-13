@@ -10,17 +10,17 @@ File::File(const string& path) {
     this->path = path;
 }
 
-void File::getTrainData(vector<TrainType>& trainData, int numOfOutputs) {
+void File::getInputData(vector<InputType>& trainData, int numOfOutputs) {
     inputStream.open(path);
     if(!inputStream.is_open()) return;
-    string input, expected;
+    string expectValue, input;
     while(!inputStream.eof()){
-        getline(inputStream, expected, ',');
+        getline(inputStream, expectValue, ',');
         getline(inputStream, input);
 
         vector<double> expecting;
         for(size_t i = 0; i < numOfOutputs; i++){
-            if(!expected.empty() && i == stod(expected)){
+            if(!expectValue.empty() && i == stod(expectValue)){
                 expecting.emplace_back(1);
             }else{
                 expecting.emplace_back(0);

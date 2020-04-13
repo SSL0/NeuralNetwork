@@ -11,7 +11,7 @@
 using namespace std;
 
 // Input data, Expected
-typedef pair<vector<double>, vector<double>> TrainType;
+typedef pair<vector<double>, vector<double>> InputType;
 
 class File {
 public:
@@ -19,7 +19,7 @@ public:
 
     void write(const string& str);
 
-    void getTrainData(vector<TrainType>& trainData, int numOfOutputs);
+    void getInputData(vector<InputType>& trainData, int numOfOutputs);
 
 private:
     string path;

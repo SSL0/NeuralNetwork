@@ -15,6 +15,8 @@ class Layer {
 public:
     Layer(int numOfNeuron);
 
+    double sum = 0.0;
+
     vector<Neuron> neurons;
     Neuron biasNeuron;
 };
